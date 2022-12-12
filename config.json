@@ -1,0 +1,16 @@
+{
+    "ConexionBD": [
+        {            
+            "usuario": "postgres",
+            "host": "localhost",
+            "bdd": "rafood",
+            "contrasena": "0809",
+            "puerto": 5432
+        }
+    ],
+    "ConfigAPI": [
+        {
+            "puerto": 8083
+        }
+    ]
+}
