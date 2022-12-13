@@ -51,7 +51,7 @@ const reactAnadirComida = (req, res) => {
 
 const anadirPedido = (req, res) => {
     const { comentario } = req.body;
-    pool.query('INSERT INTO public.pedidos(comentarios_extra, fecha_pedido, fecha_entrega, fk_id_tienda, fk_id_comida, cantidad) VALUES( $1 , NULL, NULL, NULL, NULL, NULL);',
+    pool.query('INSERT INTO public.pedidos(comentarios_extra, fecha_pedido, fecha_entrega, fk_id_tienda, fk_id_comida, cantidad) VALUES( $1 , \'2022-12-13 19:10:25\', \'2022-12-13 21:10:25\', 5, 1, 2);',
     [comentario], (err, resu) => {
         if (err) throw err;
         res.status(200).json(resu.rows);
