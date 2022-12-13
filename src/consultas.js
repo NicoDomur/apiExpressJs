@@ -33,8 +33,26 @@ const obtenerComidaId = (req, res) => {
 
 const reactObtenerComida = (req, res) => {
     const nombre_propietario = req.params.np;
-    pool.query('SELECT nombre_comida, descripcion_ingredientes, porcion, categoria, precio, ruta_imagen FROM PUBLIC.comida WHERE comida.fk_idtiendas = (SELECT id_tienda FROM PUBLIC.tiendas WHERE tiendas.propietario = $1 );',
+    pool.query('SELECT * FROM PUBLIC.comida WHERE comida.fk_idtiendas = (SELECT id_tienda FROM PUBLIC.tiendas WHERE tiendas.propietario = $1 );',
     [nombre_propietario], (err, resu) => {
+        if (err) throw err;
+        res.status(200).json(resu.rows);
+    });
+}
+
+const reactAnadirComida = (req, res) => {
+    const {nombre, descripcion, porcion, categoria, precio, imagen, fkTienda} = req.body;
+    pool.query('INSERT INTO PUBLIC.comida(nombre_comida, descripcion_ingredientes, porcion, categoria, precio, ruta_imagen, fk_idtiendas) VALUES ($1, $2, $3, $4, $5, $6, $7);',
+    [nombre, descripcion, porcion, categoria, precio, imagen, fkTienda], (err, resu) => {
+        if (err) throw err;
+        res.status(200).json(resu.rows);
+    });
+}
+
+const anadirPedido = (req, res) => {
+    const { comentario } = req.body;
+    pool.query('INSERT INTO public.pedidos(comentarios_extra, fecha_pedido, fecha_entrega, fk_id_tienda, fk_id_comida, cantidad) VALUES( $1 , NULL, NULL, NULL, NULL, NULL);',
+    [comentario], (err, resu) => {
         if (err) throw err;
         res.status(200).json(resu.rows);
     });
@@ -45,4 +63,6 @@ module.exports = {
     obtenerTiendas,
     obtenerComidaId,
     reactObtenerComida,
+    reactAnadirComida,
+    anadirPedido,
 }
