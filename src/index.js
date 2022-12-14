@@ -24,7 +24,8 @@ app.get('/tiendas', consulta.obtenerTiendas);
 app.get('/comida/:id', consulta.obtenerComidaId);
 app.get('/comidareact/:np', consulta.reactObtenerComida);
 app.post('/anadirreact', consulta.reactAnadirComida);
-app.post('/pedidos', consulta.anadirPedido);
+app.delete('/eliminarreact/:id', consulta.reactEliminarComida);
+app.put('/editarreact', consulta.reactEditarComida);
 
 app.listen(puerto, () => {
     console.log(`Corriendo en puerto ${puerto}`)

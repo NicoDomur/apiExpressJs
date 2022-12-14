@@ -10,14 +10,14 @@ const pool = new Pool({
 })
 
 const obtenerComidas = (req, res) => {
-    pool.query('SELECT * FROM public.comida;', (err, resu) =>{
+    pool.query('SELECT * FROM PUBLIC.comida;', (err, resu) =>{
         if (err) throw err;
         res.status(200).json(resu.rows);
     })
 }
 
 const obtenerTiendas = (req, res) => {
-    pool.query('SELECT * FROM public.tiendas;', (err, resu) =>{
+    pool.query('SELECT * FROM PUBLIC.tiendas;', (err, resu) =>{
         if (err) throw err;
         res.status(200).json(resu.rows);
     })
@@ -25,12 +25,24 @@ const obtenerTiendas = (req, res) => {
 
 const obtenerComidaId = (req, res) => {
     const id_comida = parseInt(req.params.id);
-    pool.query('SELECT * FROM public.comida where comida.fk_idtiendas = $1 ;', [id_comida] ,(err, resu) => {
+    pool.query('SELECT * FROM PUBLIC.comida where comida.fk_idtiendas = $1 ;', [id_comida] ,(err, resu) => {
         if (err) throw err;
         res.status(200).json(resu.rows);
     });
 }
 
+const anadirPedido = (req, res) => {
+    const { comentario } = req.body;
+    pool.query('INSERT INTO PUBLIC.pedidos(comentarios_extra, fecha_pedido, fecha_entrega, fk_id_tienda, fk_id_comida, cantidad) VALUES ( $1, \'2022-12-13 19:10:25\', \'2022-12-13 21:10:25\', 5, 11, 2);',
+    [comentario], (err, resu) => {
+        if (err) throw err;
+        res.status(200).json(resu.rows);
+    });
+}
+
+/*
+    Hacia abajo van las peticiones hechas por react
+*/
 const reactObtenerComida = (req, res) => {
     const nombre_propietario = req.params.np;
     pool.query('SELECT * FROM PUBLIC.comida WHERE comida.fk_idtiendas = (SELECT id_tienda FROM PUBLIC.tiendas WHERE tiendas.propietario = $1 );',
@@ -49,10 +61,19 @@ const reactAnadirComida = (req, res) => {
     });
 }
 
-const anadirPedido = (req, res) => {
-    const { comentario } = req.body;
-    pool.query('INSERT INTO public.pedidos(comentarios_extra, fecha_pedido, fecha_entrega, fk_id_tienda, fk_id_comida, cantidad) VALUES( $1 , \'2022-12-13 19:10:25\', \'2022-12-13 21:10:25\', 5, 11, 2);',
-    [comentario], (err, resu) => {
+const reactEliminarComida = (req, res) => {
+    const id_comida = parseInt(req.params.id);
+    pool.query('DELETE FROM PUBLIC.comida WHERE comida.idcomida = $1 ;',
+    [id_comida], (err, resu) => {
+        if (err) throw err;
+        res.status(200).json(resu.rows);
+    });
+}
+
+const reactEditarComida = (req, res) => {
+    const {nombre, descripcion, porcion, categoria, precio, imagen, idcomida} = req.body;
+    pool.query('UPDATE PUBLIC.comida SET nombre_comida = $1, descripcion_ingredientes = $2, porcion = $3, categoria = $4, precio = $5, ruta_imagen = $6 WHERE idcomida = $7 ;',
+    [nombre, descripcion, porcion, categoria, precio, imagen, idcomida], (err, resu) => {
         if (err) throw err;
         res.status(200).json(resu.rows);
     });
@@ -65,4 +86,6 @@ module.exports = {
     reactObtenerComida,
     reactAnadirComida,
     anadirPedido,
+    reactEliminarComida,
+    reactEditarComida,
 }
